@@ -14,7 +14,7 @@ spec:
     - group: apps
       kind: StatefulSet
       jsonPointers:
-        - /spec/template/spec/containers/env[] | select(.name == "MYSQL_USER")
+        - /spec/template/spec/containers/env[0]
   destination:
     namespace: test-1995
     server: {{ .Values.spec.destination.server }}
