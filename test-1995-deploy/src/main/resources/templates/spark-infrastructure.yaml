@@ -14,7 +14,7 @@ spec:
     - group: apps
       kind: StatefulSet
       jsonPointers:
-        - /spec/template/spec/containers/env[0]
+        - /spec/template/spec/containers/0/env/2/value
   destination:
     namespace: test-1995
     server: {{ .Values.spec.destination.server }}
