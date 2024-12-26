@@ -1,0 +1,34 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  annotations:
+    argocd.argoproj.io/sync-wave: "-2"
+  name: configuration-store
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  destination:
+    namespace: config-store-ns
+    server: {{ .Values.spec.destination.server }}
+  project: default
+  source:
+    path: test-1995-deploy/src/main/resources/apps/configuration-store
+    repoURL: {{ .Values.spec.repo }}
+    targetRevision: {{ .Values.spec.targetRevision }}
+    {{ if .Values.spec.helm.valueFiles }}
+    helm:
+      valueFiles:
+        {{- range .Values.spec.helm.valueFiles }}
+        - {{ . }}
+        {{- end }}
+    {{ end }}
+  syncPolicy:
+    automated: {}
+    syncOptions:
+      - ServerSideApply=true # https://github.com/argoproj/argo-cd/issues/820#issuecomment-135463693
+    {{- if .Values.spec.syncPolicy }}
+      {{- with .Values.spec.syncPolicy.syncOptions }}
+        {{- toYaml . | nindent 6 }}
+      {{- end }}
+    {{- end }}
